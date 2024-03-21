@@ -7,4 +7,5 @@ from .administration_view import AdministrationView
 from .home_view import HomeView
 from .eligible_facet_participants_mixin import EligibleFacetParticipantsMixin
 from .interview_forms import GroupInterviewListBoardView
+from .call_history_view import CallHistoryView
 from .facet_export_listboard import FacetExportListBoardView

@@ -5,8 +5,8 @@
 {% load edc_prn_extras %}
 {% load action_item_extras %}
 
-{% block demographics %}   
-	
+{% block demographics %}
+
 <div class="list-group">
     <a class="list-group-item"><i class="fa fa-birthday-cake fa-fw"></i>
     {{ dob|date:"SHORT_DATE_FORMAT" }}
@@ -33,21 +33,21 @@
 	{% endif %}
 {% endblock maternal_dashboard %}
 
-{% block prn_forms %}   
+{% block prn_forms %}
 
 	<div class="list-group list-group-default">
 
     {% add_action_item_popover subject_identifier subject_dashboard_url %}
-    
+
     {% if appointment %}
     	{% add_prn_crf_popover appointment.object subject_dashboard_url %}
     	{% add_prn_requisition_popover appointment.object subject_dashboard_url %}
     {% endif %}
-    
+
 	</div>
 {% endblock prn_forms %}
 
-{% block prn_lists %}   
+{% block prn_lists %}
 
     {% prn_list_items subject_identifier %}
 
@@ -55,7 +55,13 @@
 
 {% block interview_forms %}
         {% include 'flourish_facet/mother/dashboard/interview_forms.html' %}
-{% endblock interview_forms %}  
+{% endblock interview_forms %}
+
+{% block special_forms %}
+        {% include 'flourish_facet/mother/dashboard/special_forms.html' %}
+{% endblock special_forms %}
+
+
 
 
 {% block consents %}
@@ -70,12 +76,12 @@
 	{% endif %}
 {% endblock odk_archive_forms %}
 
-{% block action_items %}   
+{% block action_items %}
 
 	{% if open_action_items %}
-	    
+
 	    <div class="list-group list-group-default">
-	    	
+
 	        {% for action_item in open_action_items %}
 
 	            {% action_item_with_popover action_item forloop.counter %}

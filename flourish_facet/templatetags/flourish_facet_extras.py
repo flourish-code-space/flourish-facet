@@ -82,3 +82,13 @@ def focus_group_translation_transcription_button(model_wrapper):
         group_identifier=model_wrapper.object.group_identifier,
         focus_group_interview_transcription_translation_model_obj=model_wrapper.focus_group_interview_transcription_translation_model_obj,
         title=' '.join(title),)
+
+
+@register.inclusion_tag('flourish_facet/buttons/facet_contact_button.html')
+def facet_contact_button(model_wrapper):
+    title = ['Facet Contact.']
+    return dict(
+        subject_identifier=model_wrapper.object.subject_identifier,
+        add_facetcontact_href=model_wrapper.facet_contact.href,
+        title=' '.join(title),
+    )
