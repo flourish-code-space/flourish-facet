@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path, re_path
 from flourish_facet.views.interview_forms.listboard_view import GroupInterviewListBoardView
 from .admin_site import flourish_facet_admin
-from django.urls import path
+from django.urls import path, re_path
 from django.apps import apps as django_apps
 from edc_dashboard import UrlConfig
 from django.views.generic.base import RedirectView

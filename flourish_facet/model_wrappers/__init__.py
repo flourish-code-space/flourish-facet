@@ -18,3 +18,5 @@ from .focus_group_interview_trancription_translation_model_wrapper import FocusG
 from .facet_contact_wrapper import FacetContactModelWrapper
 from .facet_contact_wrapper_mixin import FacetContactModelWrapperMixin
 from .facet_export_file_model_wrapper import FacetExportFileModelWrapper
+from .facet_contact_wrapper import FacetContactModelWrapper
+from .facet_contact_wrapper_mixin import FacetContactModelWrapperMixin

@@ -9,3 +9,4 @@ from .eligible_facet_participants_mixin import EligibleFacetParticipantsMixin
 from .interview_forms import GroupInterviewListBoardView
 from .call_history_view import CallHistoryView
 from .facet_export_listboard import FacetExportListBoardView
+from .call_history_view import CallHistoryView
