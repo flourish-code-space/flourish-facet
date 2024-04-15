@@ -10,7 +10,7 @@ class FacetMotherConsentListboardView(EdcBaseViewMixin,
                                       NavbarViewMixin,
                                       ListboardFilterViewMixin,
                                       ListboardView):
-    
+
 
     listboard_template = 'facet_mother_listboard_template'
     listboard_url = 'facet_mother_listboard_url'

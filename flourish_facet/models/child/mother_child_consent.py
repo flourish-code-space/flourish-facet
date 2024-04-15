@@ -15,11 +15,11 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from edc_consent.field_mixins import VerificationFieldsMixin
 from edc_base.model_mixins import BaseUuidModel
 from .child_consent_eligibility import ChildConsentEligibility
+from edc_search.model_mixins import SearchSlugModelMixin
 
 
-class MotherChildConsent(SiteModelMixin, NonUniqueSubjectIdentifierFieldMixin,
+class MotherChildConsent(SiteModelMixin, NonUniqueSubjectIdentifierFieldMixin, SearchSlugModelMixin,
                          IdentityFieldsMixin, PersonalFieldsMixin, BaseUuidModel):
-
     facet_consent = models.ForeignKey(
         FacetConsent,
         on_delete=models.PROTECT
@@ -44,7 +44,7 @@ class MotherChildConsent(SiteModelMixin, NonUniqueSubjectIdentifierFieldMixin,
     gender = models.CharField(
         verbose_name="Gender",
         choices=GENDER,
-        max_length=1,)
+        max_length=1, )
 
     identity = IdentityField(
         verbose_name='Identity number',
@@ -92,8 +92,12 @@ class MotherChildConsent(SiteModelMixin, NonUniqueSubjectIdentifierFieldMixin,
     def consent_version(self):
         return self.version
 
-    def save(self, *args, **kwargs):
+    def get_search_slug_fields(self):
+        fields = super().get_search_slug_fields()
+        fields.append('subject_identifier')
+        return fields
 
+    def save(self, *args, **kwargs):
         eligibile = ChildConsentEligibility(
             child_dob=self.consent_datetime.date(),
             child_test=self.child_test,

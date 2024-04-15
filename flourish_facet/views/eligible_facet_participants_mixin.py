@@ -89,12 +89,10 @@ class EligibleFacetParticipantsMixin:
         facet_screened_identifiers = self.facet_screening_cls.objects.values_list(
             'subject_identifier', flat=True)
 
-        # subject_identifiers = set(
-        #     [*subject_identifiers, *facet_screened_identifiers])
 
         consent_ids = []
 
-        for index, row in subject_identifiers_df.iterrows():
+        for _, row in subject_identifiers_df.iterrows():
 
             try:
 

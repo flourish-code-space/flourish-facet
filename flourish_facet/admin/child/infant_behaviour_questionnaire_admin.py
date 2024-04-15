@@ -56,6 +56,7 @@ class InfantBehaviourQuestionnaireAdmin(CrfModelAdminMixin, admin.ModelAdmin):
                 'take_outside',
                 'talking_sound',
                 'blanket_squirm',
+                'comment',
             )
         }), audit_fieldset_tuple
     )

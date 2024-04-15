@@ -1,50 +1,53 @@
 {% extends "edc_dashboard/listboard.html" %}
+
 {% load edc_base_extras %}
-
-
 
 {% block listboard_table_header %}
 
-<th>#</th>
-<th>FACET Child Consent</th>
-<th>Subject Identifier</th>
-<th>Age</th>
-<th>User Created</th>
-<th>Date Modified</th>
+    <th>#</th>
+    <th>FACET Child Consent</th>
+    <th>Subject Identifier</th>
+    <th>Age</th>
+    <th style="text-align: center">Consented Date</th>
 {% endblock listboard_table_header %}
 
 {% block listboard_table_button_column %}
 
-<td style="white-space: nowrap">
-    <div class="btn-group">
-        <a title="Edit subject's screening form" role="button" class="btn btn-default btn-sm" href="{{ result.href }}">
-            <i class="fa fa-pencil-alt fa-sm"></i>
-        </a>
-        {% if result.id %}
+    <td style="white-space: nowrap">
+        <div class="btn-group">
+            <a title="Edit subject's screening form"
+                    role="button"
+                    class="btn btn-default btn-sm"
+                    href="{{ result.href }}">
+                <i class="fa fa-pencil-alt fa-sm"></i>
+            </a>
+            {% if result.id %}
 
-        <a id="btn-subject-dashboard-{{result.subject_identifier}}" class="btn btn-primary btn-sm" role="button"
-            title="Go to subject's dashboard" href="{% url facet_child_dashboard_url result.subject_identifier %}">
-            <i class="far fa-user-circle fa-sm"></i> Dashboard <i class="fa fa-share"></i></a>
-        {% else %}
-        <a id="btn-consent-add-{{result.subject_identifier}}" title="Consent to participate"
-            class="btn btn-warning btn-sm" href="{{ result.href }}">
-            Consent (v{{ result.version }})
-        </a>
-        {% endif %}
-    </div>
-</td>
+                <a id="btn-subject-dashboard-{{ result.subject_identifier }}"
+                        class="btn btn-primary btn-sm"
+                        role="button"
+                        title="Go to subject's dashboard"
+                        href="{% url facet_child_dashboard_url result.subject_identifier %}">
+                    <i class="far fa-user-circle fa-sm"></i> Dashboard
+                    <i class="fa fa-share"></i>
+                </a>
+            {% else %}
+                <a id="btn-consent-add-{{ result.subject_identifier }}"
+                        title="Consent to participate"
+                        class="btn btn-warning btn-sm"
+                        href="{{ result.href }}">
+                    Consent (v{{ result.version }})
+                </a>
+            {% endif %}
+        </div>
+    </td>
 {% endblock %}
-
 
 {% block listboard_table_columns %}
 
-<td>{{ result.subject_identifier }}</td>
-<td>{% age_in_years result.object.dob %}yrs {{ result.object.dob|date:"SHORT_DATE_FORMAT" }}</td>
-<td>{{ result.object.consent_datetime|date:"SHORT_DATE_FORMAT" }}</td>
-<td>{{ result.user_created }}</td>
-<td>{{ result.object.modified|date:"SHORT_DATETIME_FORMAT" }}</td>
+    <td>{{ result.subject_identifier }}</td>
+    <td>{{ result.age_in_months }}</td>
+    <td style="text-align: center">{{ result.object.consent_datetime|date:"SHORT_DATE_FORMAT" }}</td>
 
 
 {% endblock listboard_table_columns %}
-
-
