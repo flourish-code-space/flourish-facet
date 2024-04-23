@@ -28,9 +28,6 @@ class FocusGroupInterviewTranscriptionAndTranslation(SiteModelMixin, BaseUuidMod
         verbose_name='Date transcription completed',
         validators=[date_not_before_study_start, date_not_future],
     )
-    transcription_upload = models.FileField(
-        upload_to='facet_interview/transcriptions/',
-        validators=[FileExtensionValidator(['pdf', 'doc', 'docx'])])
 
     facet_member_transcription = models.CharField(
         verbose_name='Which FACET staff member completed the transcription and translation?',

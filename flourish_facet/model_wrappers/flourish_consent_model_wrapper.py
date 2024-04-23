@@ -9,6 +9,8 @@ from .facet_screening_model_wrapper import FacetScreeningModelWrapper
 from .facet_consent_model_wrapper import FacetConsentModelWrapper
 from .facet_mother_locator_model_wrapper import LocatorModelWrapper
 from ..models import FacetSubjectScreening, FacetConsent
+from .facet_contact_wrapper import FacetContactModelWrapper
+from flourish_caregiver.models import CaregiverContact
 
 
 class FlourishConsentModelWrapper(ModelWrapper):
@@ -147,3 +149,10 @@ class FlourishConsentModelWrapper(ModelWrapper):
         )
 
         return FacetConsentModelWrapper(model_obj=facet_consent_obj)
+
+    @property
+    def contact_wrapper(self):
+        contact_entry = CaregiverContact(
+            subject_identifier=self.flourish_consent_obj.subject_identifier,
+            study_name='facet')
+        return FacetContactModelWrapper(model_obj=contact_entry)

@@ -6,6 +6,6 @@ class FacetContactModelWrapper(ModelWrapper):
 
     model = 'flourish_caregiver.caregivercontact'
     next_url_name = settings.DASHBOARD_URL_NAMES.get(
-        'facet_mother_dashboard_url')
-    next_url_attrs = ['subject_identifier']
+        'facet_flourish_consent_listboard_url')
+    next_url_attrs = ['subject_identifier',]
     querystring_attrs = ['subject_identifier', 'study_name']

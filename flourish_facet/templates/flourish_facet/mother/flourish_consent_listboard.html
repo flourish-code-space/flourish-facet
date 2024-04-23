@@ -15,7 +15,6 @@
 
 </style>
 <script>
-
     function callModal(subject_identifier){
 
         fetch(`/flourish_facet/events/${subject_identifier}/`)
@@ -91,8 +90,10 @@
 {% block listboard_table_header %}
 
 <th>#</th>
-<th>Flourish Consents</th>
+<th>Call log</th>
 
+
+<th>Flourish Consents</th>
 <th>Subject Identifier</th>
 <th>Child Age (Months)</th>
 <th>User Created</th>
@@ -102,6 +103,16 @@
 
 
 {% block listboard_table_button_column %}
+
+<td>
+  <div class="btn-group">
+    {% contact_button result.contact_wrapper %}
+    <button type="button" class="btn btn-default btn-sm" onclick="callModal('{{result.subject_identifier}}')">
+      <i class="fa fa-history fa-lg"></i>
+      <i class="fa fa-files-o fa-lg"></i>
+    </button>
+  </div>
+</td>
 
 <td style="white-space: nowrap">
     <div class="btn-group">
@@ -116,9 +127,6 @@
 
         {% endif %}
         {% endif %}
-        <a id="openModalButton" class="btn btn-info btn-sm" role="button"
-        title="Call History" onclick="callModal('{{result.subject_identifier}}')" title="call-log">
-        <i class="fa fa-eye"></i> Call History </i></a>
     </div>
 </td>
 
