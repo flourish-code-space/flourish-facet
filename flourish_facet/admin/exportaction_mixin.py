@@ -1,130 +1,82 @@
 import datetime
 import uuid
 from django.apps import apps as django_apps
-from django.db.models import ManyToManyField, ForeignKey, OneToOneField, ManyToOneRel
+from django.db.models import ManyToManyField, ForeignKey, OneToOneField, ManyToOneRel, FileField, ImageField
 from django.db.models.fields.reverse_related import OneToOneRel
 from django.http import HttpResponse
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
+from flourish_export.admin_export_helper import AdminExportHelper
 import xlwt
 
 
-class ExportActionMixin:
-    def export_as_csv(self, request, queryset):
-        response = HttpResponse(content_type='application/ms-excel')
-        response['Content-Disposition'] = 'attachment; filename=%s.xls' % (
-            self.get_export_filename())
+class ExportActionMixin(AdminExportHelper):
 
-        wb = xlwt.Workbook(encoding='utf-8', style_compression=2)
-        ws = wb.add_sheet('%s')
-
-        row_num = 0
-        obj_count = 0
-        self.inline_header = False
-
-        font_style = xlwt.XFStyle()
-        font_style.font.bold = True
-        font_style.num_format_str = 'YYYY/MM/DD h:mm:ss'
-
-        field_names = []
-        for field in self.get_model_fields:
-            if isinstance(field, ManyToManyField):
-                choices = self.m2m_list_data(field.related_model)
-                for choice in choices:
-                    field_names.append(choice)
+    def update_variables(self, data={}):
+        """ Update study identifiers to desired variable name(s).
+        """
+        replace_idx = {}
+        for old_idx, new_idx in replace_idx.items():
+            try:
+                data[new_idx] = data.pop(old_idx)
+            except KeyError:
                 continue
-            field_names.append(field.name)
+        return data
 
-        if queryset and getattr(queryset[0], 'facet_visit', None):
-            field_names.insert(0, 'subject_identifier')
-            field_names.insert(1, 'visit_code')
+    def study_status(self, subject_identifier=None):
+        if not subject_identifier:
+            return ''
+        caregiver_offstudy_cls = django_apps.get_model(
+            'flourish_prn.caregiveroffstudy')
+        is_offstudy = caregiver_offstudy_cls.objects.filter(
+            subject_identifier=subject_identifier).exists()
 
-        if self.is_consent(queryset[0]):
-            field_names.append("mother_hiv_status")
-            field_names.append("consent_child_age_in_months")
-            field_names.append("current_child_age_in_months")
+        return 'off_study' if is_offstudy else 'on_study'
 
-        for col_num in range(len(field_names)):
-            ws.write(row_num, col_num, field_names[col_num], font_style)
+    def export_as_csv(self, request, queryset):
+        records = []
 
         for obj in queryset:
-            data = []
-            inline_field_names = []
+            data = obj.__dict__.copy()
+
+            subject_identifier = getattr(obj, 'subject_identifier', None)
+            screening_identifier = self.screening_identifier(
+                subject_identifier=subject_identifier)
 
             # Add subject identifier and visit code
             if getattr(obj, 'facet_visit', None):
+                data.update(
+                    subject_identifier=subject_identifier,
+                    visit_code=obj.visit_code)
 
-                subject_identifier = obj.facet_visit.subject_identifier
-
-                data.append(subject_identifier)
-                data.append(obj.facet_visit.visit_code)
-
-            inline_objs = []
+            # Update variable names for study identifiers
+            data = self.update_variables(data)
+            data.update(study_status=self.study_status(subject_identifier) or '')
 
             for field in self.get_model_fields:
-
+                field_name = field.name
+                if (field_name == 'consent_version') and self.is_visit(obj):
+                    data.update({f'{field_name}': '1'})
+                    continue
+                if isinstance(field, (ForeignKey, OneToOneField, OneToOneRel,)):
+                    continue
+                if isinstance(field, (FileField, ImageField,)):
+                    file_obj = getattr(obj, field_name, '')
+                    data.update({f'{field_name}': getattr(file_obj, 'name', '')})
+                    continue
                 if isinstance(field, ManyToManyField):
-                    m2m_values = self.get_m2m_values(obj, m2m_field=field)
-                    data.extend(m2m_values)
+                    data.update(self.m2m_data_dict(obj, field))
                     continue
-                if isinstance(field, (ForeignKey, OneToOneField,)):
-                    field_value = getattr(obj, field.name)
-                    data.append(field_value.id)
+                if not (self.is_consent(obj) or self.is_visit(obj)) and isinstance(field, ManyToOneRel):
+                    data.update(self.inline_data_dict(obj, field))
                     continue
-                if isinstance(field, OneToOneRel):
-                    continue
-                if not self.is_consent(obj) and isinstance(field, ManyToOneRel):
-                    key_manager = getattr(obj, f'{field.name}_set')
-                    inline_values = key_manager.all()
-                    fields = field.related_model._meta.get_fields()
-                    for field in fields:
-                        if not isinstance(field,
-                                          (ForeignKey, OneToOneField, ManyToManyField,)):
-                            inline_field_names.append(field.name)
-                        if isinstance(field, ManyToManyField):
-                            choices = self.m2m_list_data(field.related_model)
-                            inline_field_names.extend(
-                                [choice for choice in choices])
-                    if inline_values:
-                        inline_objs.append(inline_values)
-                field_value = getattr(obj, field.name, '')
-                data.append(field_value)
 
-            if self.is_consent(obj):
-                data.append(obj.hiv_status)
-                data.append(obj.consent_child_age)
-                data.append(obj.current_child_age)
-
-            if not self.is_consent(obj) and inline_objs:
-                # Update header
-                inline_field_names = self.inline_exclude(
-                    field_names=inline_field_names)
-                if not self.inline_header:
-                    self.update_headers_inline(
-                        inline_fields=inline_field_names, field_names=field_names,
-                        ws=ws, row_num=0, font_style=font_style)
-
-                for inline_qs in inline_objs:
-                    for inline_obj in inline_qs:
-                        inline_data = []
-                        inline_data.extend(data)
-                        for field in inline_obj._meta.get_fields():
-                            if field.name in inline_field_names:
-                                inline_data.append(
-                                    getattr(inline_obj, field.name, ''))
-                            if isinstance(field, ManyToManyField):
-                                m2m_values = self.get_m2m_values(inline_obj,
-                                                                 m2m_field=field)
-                                inline_data.extend(m2m_values)
-                        row_num += 1
-                        self.write_rows(data=inline_data,
-                                        row_num=row_num, ws=ws)
-                obj_count += 1
-            else:
-                row_num += 1
-
-                self.write_rows(data=data, row_num=row_num, ws=ws)
-        wb.save(response)
+            # Exclude identifying values
+            data = self.remove_exclude_fields(data)
+            # Correct date formats
+            data = self.fix_date_formats(data)
+            records.append(data)
+        response = self.write_to_csv(records)
         return response
 
     export_as_csv.short_description = _(
@@ -169,7 +121,7 @@ class ExportActionMixin:
         consent = self.consent_obj(subject_identifier=subject_identifier)
 
         if consent:
-            return consent.screening_identifier
+            return getattr(consent, 'screening_identifier', None)
         return None
 
     def consent_obj(self, subject_identifier: str):
@@ -210,23 +162,3 @@ class ExportActionMixin:
                 'last_name', 'initials', 'identity', 'facet_visit_id', 'confirm_identity',
                 'motherchildconsent', ]
 
-    def m2m_list_data(self, model_cls=None):
-        qs = model_cls.objects.order_by(
-            'created').values_list('short_name', flat=True)
-        return list(qs)
-
-    def get_m2m_values(self, model_obj, m2m_field=None):
-        m2m_values = []
-        model_cls = m2m_field.related_model
-        choices = self.m2m_list_data(model_cls=model_cls)
-        key_manager = getattr(model_obj, m2m_field.name)
-        for choice in choices:
-            selected = 0
-            try:
-                key_manager.get(short_name=choice)
-            except model_cls.DoesNotExist:
-                pass
-            else:
-                selected = 1
-            m2m_values.append(selected)
-        return m2m_values

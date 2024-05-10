@@ -184,14 +184,24 @@ class HomeView(EdcBaseViewMixin, NavbarViewMixin, TemplateView, EligibleFacetPar
     def incomplete_enrol_hiv_statistics(self):
         """Inprogress visit HIV statistics"""
         return self.get_hiv_statistics(appt_status=IN_PROGRESS_APPT)
+    
+    @property
+    def complete_appointment_count(self):
+        facet_subject_identifiers = self.facet_consent_cls.objects.values_list(
+            'subject_identifier', flat=True)
+        
+        appt_count =  self.facet_appointment_cls.objects.filter(
+            appt_status = COMPLETE_APPT,
+            subject_identifier__in = facet_subject_identifiers).count()
+        
+        return appt_count
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         facet_screenig = self.facet_subject_screening_cls.objects.all()
         facet_consent = self.facet_consent_cls.objects.all()
         focus_group = self.facet_focus_group_cls.objects.all()
-        facet_appointment = self.facet_appointment_cls.objects.filter(
-            appt_status='done')
         flourish_consents = self.flourish_consent_cls.objects.all()
 
         eligible_subjects = self.eligible_participants(
@@ -200,13 +210,12 @@ class HomeView(EdcBaseViewMixin, NavbarViewMixin, TemplateView, EligibleFacetPar
         screened_subjects = facet_screenig.count()
         consented_subjects = facet_consent.count()
         facet_focus_groups = focus_group.count()
-        facet_appointments = facet_appointment.count()
 
         context.update(
             consented_subjects=consented_subjects,
             screened_subjects=screened_subjects,
             facet_focus_groups=facet_focus_groups,
-            facet_appointments=facet_appointments,
+            complete_appointment_count=self.complete_appointment_count,
             eligible_subjects=eligible_subjects,
             consented_hiv_statistics=self.consented_hiv_statistics,
             screened_hiv_statistics=self.screened_hiv_statistics,

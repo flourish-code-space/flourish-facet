@@ -1,196 +1,252 @@
 {% extends 'flourish_facet/base.html' %}
+
 {% load static %}
-
 {% block extra-scripts %}
-
 {% endblock extra-scripts %}
-
-
 {% block extra-styles %}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
-<style>
-    .my-card {
-        position: absolute;
-        left: 40%;
-        top: -20px;
-        border-radius: 50%;
-    }
-</style>
+    <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css"
+    />
+    <style>
+        .my-card {
+            position: absolute;
+            left: 40%;
+            top: -20px;
+            border-radius: 50%;
+        }
+    </style>
 {% endblock extra-styles %}
-
 {% block main %}
-<div class="row w-100 jumbotron">
-    <div class="col-md-3">
-        <div class="card border-success mx-sm-1 p-3">
-            <div class="card border-success shadow text-success p-3 my-card"><span aria-hidden="true"></span></div>
-            <div class="text-success text-center mt-3">
-                <h4>Eligible Participants</h4>
-            </div>
-            <div class="text-success text-center mt-2">
-                <h1>{{ eligible_subjects }}</h1>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card border-success mx-sm-1 p-3">
-            <div class="card border-success shadow text-success p-3 my-card"><span aria-hidden="true"></span></div>
-            <div class="text-success text-center mt-3">
-                <h4>Screened Participants</h4>
-            </div>
-            <div class="text-success text-center mt-2">
-                <h1>{{ screened_subjects }}</h1>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-4">
-        <div class="card border-info mx-sm-1 p-3">
-            <div class="card border-info shadow text-info p-3 my-card"><span aria-hidden="true"></span></div>
-            <div class="text-info text-center mt-3">
-                <h4>Facet Consents</h4>
-            </div>
-            <div class="text-info text-center mt-2">
-                <h1>{{ consented_subjects }}</h1>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="row w-100 jumbotron">
-
-    <div class="col-md-6">
-        <div class="card border-info mx-sm-1 p-3">
-            <div class="card border-info shadow text-info p-3 my-card"><span aria-hidden="true"></span></div>
-            <div class="text-info text-center mt-3">
-                <h4>Complete 6 month Visits</h4>
-            </div>
-            <div class="text-info text-center mt-2">
-                <h1>{{ facet_appointments }}</h1>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-6">
-        <div class="card border-info mx-sm-1 p-3">
-            <div class="card border-info shadow text-info p-3 my-card"><span aria-hidden="true"></span></div>
-            <div class="text-info text-center mt-3">
-                <h4>Focus Groups</h4>
-            </div>
-            <div class="text-info text-center mt-2">
-                <h1>{{ facet_focus_groups }}</h1>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="row">
-
-    <aside class="col-sm-4">
-        <div class="card">
-            <article class="card-group-item">
-                <header class="card-header">
-                    <h6 class="title">Screened Mothers HIV Statistics </h6>
-                </header>
-                <div class="filter-content">
-                    <div class="list-group list-group-flush">
-                        <a href="#" class="list-group-item">Positive - <span
-                                class="float-right badge badge-light round"></span>{{screened_hiv_statistics.positive_mothers}}</a>
-                        <a href="#" class="list-group-item">Negative - <span
-                                class="float-right badge badge-light round"></span>{{screened_hiv_statistics.negative_mothers}}</a>
-                        <a href="#" class="list-group-item">Indeterminate - <span
-                                class="float-right badge badge-light round"></span>{{screened_hiv_statistics.ind_mothers}}</a>
-                    </div> <!-- list-group .// -->
+    <div class="row w-100 jumbotron">
+        <div class="col-md-3">
+            <div class="card border-success mx-sm-1 p-3">
+                <div class="card border-success shadow text-success p-3 my-card">
+                    <span aria-hidden="true"></span>
                 </div>
-            </article> <!-- card-group-item.// -->
-        </div> <!-- card.// -->
-    </aside>
-    <aside class="col-sm-4">
-        <div class="card">
-            <article class="card-group-item">
-                <header class="card-header">
-                    <h6 class="title">Consented Mothers HIV Statistics </h6>
-                </header>
-                <div class="filter-content">
-                    <div class="list-group list-group-flush">
-                        <a href="#" class="list-group-item">Positive - <span
-                                class="float-right badge badge-light round"></span>{{consented_hiv_statistics.positive_mothers}}</a>
-                        <a href="#" class="list-group-item">Negative - <span
-                                class="float-right badge badge-light round"></span>{{consented_hiv_statistics.negative_mothers}}</a>
-                        <a href="#" class="list-group-item">Indeterminate - <span
-                                class="float-right badge badge-light round"></span>{{consented_hiv_statistics.ind_mothers}}</a>
-                    </div> <!-- list-group .// -->
+                <div class="text-success text-center mt-3">
+                    <h4>Eligible Participants</h4>
                 </div>
-            </article> <!-- card-group-item.// -->
-        </div> <!-- card.// -->
-    </aside>
-    <aside class="col-sm-4">
-        <div class="card">
-            <article class="card-group-item">
-                <header class="card-header">
-                    <h6 class="title">Appointment Statistics </h6>
-                </header>
-                <div class="filter-content">
-                    <div class="list-group list-group-flush">
-                        <a href="#" class="list-group-item">Completed Appointments - <span
-                                class="float-right badge badge-light round"></span>{{appointment_statistics.completed_appts}}</a>
-                        <a href="#" class="list-group-item">Incompleted Appointments - <span
-                                class="float-right badge badge-light round"></span>{{appointment_statistics.incompleted_appts}}</a>
-                        <a href="#" class="list-group-item">New Appointments - <span
-                                class="float-right badge badge-light round"></span>{{appointment_statistics.new_appts}}</a>
-                        <a href="#" class="list-group-item">Cancelled Appointments - <span
-                                class="float-right badge badge-light round"></span>{{appointment_statistics.cancelled_appts}}</a>
-                    </div> <!-- list-group .// -->
+                <div class="text-success text-center mt-2">
+                    <h1>{{ eligible_subjects }}</h1>
                 </div>
-            </article> <!-- card-group-item.// -->
-        </div> <!-- card.// -->
-    </aside>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-success mx-sm-1 p-3">
+                <div class="card border-success shadow text-success p-3 my-card">
+                    <span aria-hidden="true"></span>
+                </div>
+                <div class="text-success text-center mt-3">
+                    <h4>Screened Participants</h4>
+                </div>
+                <div class="text-success text-center mt-2">
+                    <h1>{{ screened_subjects }}</h1>
+                </div>
+            </div>
+        </div>
 
-    <aside class="col-sm-4">
-        <div class="card">
-            <article class="card-group-item">
-                <header class="card-header">
-                    <h6 class="title">Enrollment Visit-Complete: HIV Statistics</h6>
-                </header>
-                <div class="filter-content">
-                    <div class="list-group list-group-flush">
-                        <a href="#" class="list-group-item">Positive -
-                            <span
-                                class="float-right badge badge-light round"></span>{{enrollment_hiv_statistics.pos}}</a>
-                        <a href="#" class="list-group-item">Negative -
-                            <span
-                                class="float-right badge badge-light round"></span>{{enrollment_hiv_statistics.neg}}</a>
-                        <a href="#" class="list-group-item">Indeterminate -
-                            <span
-                                class="float-right badge badge-light round"></span>{{enrollment_hiv_statistics.ind}}</a>
+        <div class="col-md-4">
+            <div class="card border-info mx-sm-1 p-3">
+                <div class="card border-info shadow text-info p-3 my-card">
+                    <span aria-hidden="true"></span>
+                </div>
+                <div class="text-info text-center mt-3">
+                    <h4>Facet Consents</h4>
+                </div>
+                <div class="text-info text-center mt-2">
+                    <h1>{{ consented_subjects }}</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row w-100 jumbotron">
+        <div class="col-md-6">
+            <div class="card border-info mx-sm-1 p-3">
+                <div class="card border-info shadow text-info p-3 my-card">
+                    <span aria-hidden="true"></span>
+                </div>
+                <div class="text-info text-center mt-3">
+                    <h4>Complete 6 month Visits</h4>
+                </div>
+                <div class="text-info text-center mt-2">
+                    <h1>{{ complete_appointment_count }}</h1>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card border-info mx-sm-1 p-3">
+                <div class="card border-info shadow text-info p-3 my-card">
+                    <span aria-hidden="true"></span>
+                </div>
+                <div class="text-info text-center mt-3">
+                    <h4>Focus Groups</h4>
+                </div>
+                <div class="text-info text-center mt-2">
+                    <h1>{{ facet_focus_groups }}</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <aside class="col-sm-4">
+            <div class="card">
+                <article class="card-group-item">
+                    <header class="card-header">
+                        <h6 class="title">Screened Mothers HIV Statistics</h6>
+                    </header>
+                    <div class="filter-content">
+                        <div class="list-group list-group-flush">
+                            <a href="#" class="list-group-item"
+                            >Positive -
+                                <span class="float-right badge badge-light round"></span
+                                >{{ screened_hiv_statistics.positive_mothers }}</a
+                            >
+                            <a href="#" class="list-group-item"
+                            >Negative -
+                                <span class="float-right badge badge-light round"></span
+                                >{{ screened_hiv_statistics.negative_mothers }}</a
+                            >
+                            <a href="#" class="list-group-item"
+                            >Indeterminate -
+                                <span class="float-right badge badge-light round"></span
+                                >{{ screened_hiv_statistics.ind_mothers }}</a
+                            >
+                        </div>
+                        <!-- list-group .// -->
                     </div>
-                </div>
-            </article>
-        </div>
-    </aside>
-
-    <aside class="col-sm-4">
-        <div class="card">
-            <article class="card-group-item">
-                <header class="card-header">
-                    <h6 class="title">Enrollment Visit-InProgress: HIV Statistics</h6>
-                </header>
-                <div class="filter-content">
-                    <div class="list-group list-group-flush">
-                        <a href="#" class="list-group-item">Positive -
-                            <span
-                                class="float-right badge badge-light round"></span>{{incomplete_enrol_hiv_statistics.pos}}</a>
-                        <a href="#" class="list-group-item">Negative -
-                            <span
-                                class="float-right badge badge-light round"></span>{{incomplete_enrol_hiv_statistics.neg}}</a>
-                        <a href="#" class="list-group-item">Indeterminate -
-                            <span
-                                class="float-right badge badge-light round"></span>{{incomplete_enrol_hiv_statistics.ind}}</a>
+                </article>
+                <!-- card-group-item.// -->
+            </div>
+            <!-- card.// -->
+        </aside>
+        <aside class="col-sm-4">
+            <div class="card">
+                <article class="card-group-item">
+                    <header class="card-header">
+                        <h6 class="title">Consented Mothers HIV Statistics</h6>
+                    </header>
+                    <div class="filter-content">
+                        <div class="list-group list-group-flush">
+                            <a href="#" class="list-group-item"
+                            >Positive -
+                                <span class="float-right badge badge-light round"></span
+                                >{{ consented_hiv_statistics.positive_mothers }}</a
+                            >
+                            <a href="#" class="list-group-item"
+                            >Negative -
+                                <span class="float-right badge badge-light round"></span
+                                >{{ consented_hiv_statistics.negative_mothers }}</a
+                            >
+                            <a href="#" class="list-group-item"
+                            >Indeterminate -
+                                <span class="float-right badge badge-light round"></span
+                                >{{ consented_hiv_statistics.ind_mothers }}</a
+                            >
+                        </div>
+                        <!-- list-group .// -->
                     </div>
-                </div>
-            </article>
-        </div>
-    </aside>
+                </article>
+                <!-- card-group-item.// -->
+            </div>
+            <!-- card.// -->
+        </aside>
+        <aside class="col-sm-4">
+            <div class="card">
+                <article class="card-group-item">
+                    <header class="card-header">
+                        <h6 class="title">Appointment Statistics</h6>
+                    </header>
+                    <div class="filter-content">
+                        <div class="list-group list-group-flush">
+                            <a href="#" class="list-group-item"
+                            >Completed Appointments -
+                                <span class="float-right badge badge-light round"></span
+                                >{{ appointment_statistics.completed_appts }}</a
+                            >
+                            <a href="#" class="list-group-item"
+                            >Incompleted Appointments -
+                                <span class="float-right badge badge-light round"></span
+                                >{{ appointment_statistics.incompleted_appts }}</a
+                            >
+                            <a href="#" class="list-group-item"
+                            >New Appointments -
+                                <span class="float-right badge badge-light round"></span
+                                >{{ appointment_statistics.new_appts }}</a
+                            >
+                            <a href="#" class="list-group-item"
+                            >Cancelled Appointments -
+                                <span class="float-right badge badge-light round"></span
+                                >{{ appointment_statistics.cancelled_appts }}</a
+                            >
+                        </div>
+                        <!-- list-group .// -->
+                    </div>
+                </article>
+                <!-- card-group-item.// -->
+            </div>
+            <!-- card.// -->
+        </aside>
 
+        <aside class="col-sm-4">
+            <div class="card">
+                <article class="card-group-item">
+                    <header class="card-header">
+                        <h6 class="title">Enrollment Visit-Complete: HIV Statistics</h6>
+                    </header>
+                    <div class="filter-content">
+                        <div class="list-group list-group-flush">
+                            <a href="#" class="list-group-item"
+                            >Positive -
+                                <span class="float-right badge badge-light round"></span
+                                >{{ enrollment_hiv_statistics.pos }}</a
+                            >
+                            <a href="#" class="list-group-item"
+                            >Negative -
+                                <span class="float-right badge badge-light round"></span
+                                >{{ enrollment_hiv_statistics.neg }}</a
+                            >
+                            <a href="#" class="list-group-item"
+                            >Indeterminate -
+                                <span class="float-right badge badge-light round"></span
+                                >{{ enrollment_hiv_statistics.ind }}</a
+                            >
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </aside>
 
-</div>
+        <aside class="col-sm-4">
+            <div class="card">
+                <article class="card-group-item">
+                    <header class="card-header">
+                        <h6 class="title">Enrollment Visit-InProgress: HIV Statistics</h6>
+                    </header>
+                    <div class="filter-content">
+                        <div class="list-group list-group-flush">
+                            <a href="#" class="list-group-item"
+                            >Positive -
+                                <span class="float-right badge badge-light round"></span
+                                >{{ incomplete_enrol_hiv_statistics.pos }}</a
+                            >
+                            <a href="#" class="list-group-item"
+                            >Negative -
+                                <span class="float-right badge badge-light round"></span
+                                >{{ incomplete_enrol_hiv_statistics.neg }}</a
+                            >
+                            <a href="#" class="list-group-item"
+                            >Indeterminate -
+                                <span class="float-right badge badge-light round"></span
+                                >{{ incomplete_enrol_hiv_statistics.ind }}</a
+                            >
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </aside>
+    </div>
 
 {% endblock main %}
