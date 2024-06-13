@@ -12,7 +12,6 @@ from .child import MotherChildConsent
 from .child import ChildHivTesting
 from ..models import FacetChildOffSchedule, FacetMotherOffSchedule
 
-
 from ..action_items import FacetChildOffStudyAction
 
 from ..utils import trigger_action_item

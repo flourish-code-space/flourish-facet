@@ -8,7 +8,7 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from flourish_export.admin_export_helper import AdminExportHelper
 import xlwt
-
+from flourish_caregiver.helper_classes import MaternalStatusHelper
 
 class ExportActionMixin(AdminExportHelper):
 
@@ -42,6 +42,8 @@ class ExportActionMixin(AdminExportHelper):
             subject_identifier = getattr(obj, 'subject_identifier', None)
             screening_identifier = self.screening_identifier(
                 subject_identifier=subject_identifier)
+            caregiver_hiv_status = self.caregiver_hiv_status(
+                subject_identifier=subject_identifier)
 
             # Add subject identifier and visit code
             if getattr(obj, 'facet_visit', None):
@@ -52,6 +54,7 @@ class ExportActionMixin(AdminExportHelper):
             # Update variable names for study identifiers
             data = self.update_variables(data)
             data.update(study_status=self.study_status(subject_identifier) or '')
+            data.update(hiv_status=caregiver_hiv_status,)
 
             for field in self.get_model_fields:
                 field_name = field.name
@@ -123,6 +126,13 @@ class ExportActionMixin(AdminExportHelper):
         if consent:
             return getattr(consent, 'screening_identifier', None)
         return None
+    
+    def caregiver_hiv_status(self, subject_identifier=None):
+
+        status_helper = MaternalStatusHelper(
+            subject_identifier=subject_identifier)
+
+        return status_helper.hiv_status
 
     def consent_obj(self, subject_identifier: str):
         consent_cls = django_apps.get_model('flourish_facet.facetconsent')

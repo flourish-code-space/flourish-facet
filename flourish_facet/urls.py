@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, re_path
 from flourish_facet.views.interview_forms.listboard_view import GroupInterviewListBoardView
 from .admin_site import flourish_facet_admin
 from django.urls import path, re_path
@@ -39,6 +39,7 @@ from .views import FacetChildDashboardView
 from .views import AdministrationView, HomeView, CallHistoryView
 from .patterns import subject_identifier, group_identifier
 from .admin_site import flourish_facet_admin
+
 
 app_name = 'flourish_facet'
 
@@ -116,7 +117,6 @@ facet_export_listboard_url_config = UrlConfig(
     url_name='facet_export_listboard_url',
     view_class=FacetExportListBoardView,
     label='facet_export_listboard_url',)
-
 
 urlpatterns += facet_mother_listboard_url_config.listboard_urls
 urlpatterns += flourish_consent_listboard_url_config.listboard_urls

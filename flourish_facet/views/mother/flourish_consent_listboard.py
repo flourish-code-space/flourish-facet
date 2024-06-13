@@ -23,7 +23,7 @@ class FlourishConsentListboardView(EdcBaseViewMixin,
     model = 'flourish_caregiver.subjectconsent'
     model_wrapper_cls = FlourishConsentModelWrapper
     navbar_name = 'flourish_facet'
-    navbar_selected_item = 'flourish_consent_listboard'
+    navbar_selected_item = 'facet_flourish_consent_listboard_url'
 
     flourish_child_consent_model = 'flourish_caregiver.caregiverchildconsent'
 

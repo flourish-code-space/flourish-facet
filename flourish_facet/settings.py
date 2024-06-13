@@ -88,7 +88,7 @@ INSTALLED_APPS = [
     'flourish_facet.apps.EdcAppointmentAppConfig',
     'flourish_facet.apps.EdcBaseAppConfig',
     'flourish_facet.apps.EdcOdkAppConfig',
-    'flourish_facet.apps.AppConfig'
+    'flourish_facet.apps.AppConfig',
 ]
 
 MIDDLEWARE = [
@@ -101,6 +101,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'edc_dashboard.middleware.DashboardMiddleware',
     'edc_subject_dashboard.middleware.DashboardMiddleware',
+
 ]
 
 ROOT_URLCONF = 'flourish_facet.urls'

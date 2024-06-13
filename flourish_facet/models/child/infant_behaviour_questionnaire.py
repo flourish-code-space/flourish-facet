@@ -319,7 +319,9 @@ class InfantBehaviourQuestionnaire(CrfModelMixin):
                    'gore ngwana a itseneke a bo a retolola mmele?')
     )
 
-    comment = models.TextField(null=True, blank=True)
+    comment = models.TextField(
+        null=True,
+        blank = True)
 
     @property
     def get_child_age(self):

@@ -5,78 +5,80 @@
 
 {% block extra-scripts %}
 {{ block.super}}
+
+
 <style>
-    .modal-scrollable {
-      max-height: calc(100vh - 210px);
-      overflow-y: auto;
-  }
+  .modal-scrollable {
+    max-height: calc(100vh - 210px);
+    overflow-y: auto;
+}
 
-  </style>
-  <script>
+</style>
+<script>
+    function callModal(subject_identifier){
 
-      function callModal(subject_identifier){
+        fetch(`/flourish_facet/events/${subject_identifier}/`)
+            .then(res => res.json())
+            .then(data =>{
 
-          fetch(`/flourish_facet/events/${subject_identifier}/`)
-              .then(res => res.json())
-              .then(data =>{
+            if (Object.keys(data.appt).length === 0 &&
+            Object.keys(data.contact_entry).length === 0 )
+            {
+                document.getElementById('modalContent').innerHTML = '<p>No data available</p>';
+            }
+            else
+            {
+              let content = '';
 
-              if (Object.keys(data.appt).length === 0 &&
-              Object.keys(data.contact_entry).length === 0 )
-              {
-                  document.getElementById('modalContent').innerHTML = '<p>No data available</p>';
-              }
-              else
-              {
-                let content = '';
+              content += '<table style="padding: 10px;">';
+                content += '<thead>';
+                content += '<tr>';
+                content += '<th>Date</th>';
+                content += '<th>Study</th>';
+                content += '<th>Type</th>';
+                content += '<th>Called</th>';
+                content += '<th>Outcome</th>';
+                content += '</tr>';
+                content += '</thead>';
+                content += '<tbody>';
 
-                content += '<table style="padding: 10px;">';
-                  content += '<thead>';
-                  content += '<tr>';
-                  content += '<th>Date</th>';
-                  content += '<th>Study</th>';
-                  content += '<th>Type</th>';
-                  content += '<th>Called</th>';
-                  content += '<th>Outcome</th>';
-                  content += '</tr>';
-                  content += '</thead>';
-                  content += '<tbody>';
-
-                  // Add appointments data
-                  data.appt.forEach(appt => {
-                      content += '<tr>';
-                      content += `<td style="padding: 10px;">${appt.appt_datetime}</td>`;
-                      content += `<td style="padding: 10px;">${appt.source}</td>`;
-                      content += `<td style="padding: 10px;">${appt.appt_type}</td>`;
-                      content += `<td style="padding: 10px;">${appt.appt_reason}</td>`;
-                      content += '</tr>';
-                  });
-
-                  // Call entries data
-                  data.contact_entry.forEach(call_entry => {
+                // Add appointments data
+                data.appt.forEach(appt => {
                     content += '<tr>';
-                    content += `<td style="padding: 10px;">${call_entry.report_datetime}</td>`;
-                    content += `<td style="padding: 10px;">${call_entry.source}</td>`;
-                    content += `<td style="padding: 10px;">${call_entry.contact_type}</td>`;
-                    content += `<td style="padding: 10px;">${call_entry.status}</td>`;
-                    content += `<td style="padding: 10px;">${call_entry.outcome}</td>`;
+                    content += `<td style="padding: 10px;">${appt.appt_datetime}</td>`;
+                    content += `<td style="padding: 10px;">${appt.source}</td>`;
+                    content += `<td style="padding: 10px;">${appt.appt_type}</td>`;
+                    content += `<td style="padding: 10px;">${appt.appt_reason}</td>`;
                     content += '</tr>';
                 });
 
-                  content += '</tbody>';
-                  content += '</table>';
+                // Call entries data
+                data.contact_entry.forEach(call_entry => {
+                  content += '<tr>';
+                  content += `<td style="padding: 10px;">${call_entry.report_datetime}</td>`;
+                  content += `<td style="padding: 10px;">${call_entry.source}</td>`;
+                  content += `<td style="padding: 10px;">${call_entry.contact_type}</td>`;
+                  content += `<td style="padding: 10px;">${call_entry.status}</td>`;
+                  content += `<td style="padding: 10px;">${call_entry.outcome}</td>`;
+                  content += '</tr>';
+              });
 
-                document.getElementById('modalContent').innerHTML = content;
+                content += '</tbody>';
+                content += '</table>';
 
-              }
+              document.getElementById('modalContent').innerHTML = content;
 
-              $('#callModal').modal('show');
-              })
-              .catch(error => console.error('Error fetching data:', error));
-      }
+            }
 
-  </script>
+            $('#callModal').modal('show');
+            })
+            .catch(error => console.error('Error fetching data:', error));
+    }
 
-  {% endblock extra-scripts %}
+</script>
+
+{% endblock extra-scripts %}
+
 
 {% block listboard_panel %}
 <a id="facetscreening_add" title="add screening" class="btn btn-sm btn-default" role="button"
@@ -101,6 +103,7 @@
 
 
 {% block listboard_table_button_column %}
+
 <td>
   <div class="btn-group">
     {% contact_button result.contact_wrapper %}
@@ -121,6 +124,7 @@
         <a id="btn-subject-dashboard-{{result.subject_identifier}}" class="btn btn-primary btn-sm" role="button"
             title="Go to subject's dashboard" href="{% url facet_mother_dashboard_url result.subject_identifier %}">
             <i class="far fa-user-circle fa-sm"></i> Dashboard <i class="fa fa-share"></i></a>
+
         {% endif %}
         {% endif %}
     </div>
@@ -128,26 +132,25 @@
 
  <!-- Modal -->
  <div class="modal fade" id="callModal" tabindex="-1" role="dialog" aria-labelledby="callModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-scrollable" role="document">
-        <div class="modal-content">
-          <button style="color: #CD0909; margin:15px" type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true" style="color: #CD0909" >&times;</span>
-          </button>
-            <div class="modal-header">
-                <h5 class="modal-title" id="callModalLabel">Contact History</h5>
+  <div class="modal-dialog modal-scrollable" role="document">
+      <div class="modal-content">
+        <button style="color: #CD0909; margin:15px" type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true" style="color: #CD0909" >&times;</span>
+        </button>
+          <div class="modal-header">
+              <h5 class="modal-title" id="callModalLabel">Contact History</h5>
 
-            </div>
-            <div class="modal-body" style="max-height: 400px; overflow-y: auto;" id="modalContent">
-                <!-- Content dynamically added here -->
-            </div>
-        </div>
-    </div>
+          </div>
+          <div class="modal-body" style="max-height: 400px; overflow-y: auto;" id="modalContent">
+              <!-- Content dynamically added here -->
+          </div>
+      </div>
   </div>
+</div>
 {% endblock %}
 
 
 {% block listboard_table_columns %}
-
 
 <td>{{ result.subject_identifier }}</td>
 <td style="text-align: center;">{{ result.facet_child_age }}</td>
@@ -170,6 +173,7 @@
 {% else %}
 <td></td>
 {% endif %}
+
 
 
 
