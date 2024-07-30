@@ -12,7 +12,7 @@ class MaternalHivArt(CrfModelMixin):
     hiv_test_date = models.DateField(
         verbose_name='When did you first test positive for HIV?',
         null=True,
-        blank=True,
+        blank=False,
         validators=[date_not_future]
     )
     art_received = models.CharField(
@@ -35,7 +35,7 @@ class MaternalHivArt(CrfModelMixin):
     drug_combination_before_other = OtherCharField()
 
     art_start_date = models.DateField(
-        verbose_name='If yes, when did the you start taking antiretroviral drugs?',
+        verbose_name='When did you start taking antiretroviral drugs?',
         null=True,
         blank=True,
         validators=[date_not_future,]

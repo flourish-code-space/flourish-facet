@@ -1,5 +1,5 @@
 from edc_form_validators import FormValidator
-from edc_constants.constants import NO, YES, POS, OTHER
+from edc_constants.constants import NO, YES, POS
 from django.core.exceptions import ValidationError
 from flourish_caregiver.helper_classes import MaternalStatusHelper
 
@@ -17,19 +17,16 @@ class MaternalHivArtFormValidator(FormValidator):
             self.hiv_positive_validations()
         else:
             self.hiv_negative_validations()
+        self.validate_against_hiv_test_date()
 
     def hiv_positive_validations(self):
-        hiv_test_date_fields = (
-            'hiv_test_date',
-            'drug_combination_before',
-            'art_start_date',
-            'art_received_preg',)
+    
 
-        for field in hiv_test_date_fields:
-            self.required_if(
-                YES,
-                field='art_received',
-                field_required=field)
+
+        self.required_if(
+            YES,
+            field='art_received',
+            field_required='drug_combination_before')
 
         self.validate_other_specify(field='drug_combination_before',
                                     other_specify_field='drug_combination_before_other')
@@ -91,3 +88,13 @@ class MaternalHivArtFormValidator(FormValidator):
 
         self.required_if(NO, field='hiv_status_disclosure',
                          field_required='comment_end')
+        
+    def validate_against_hiv_test_date(self):
+        cleaned_data = self.cleaned_data
+        hiv_test_date = cleaned_data.get('hiv_test_date')
+        art_start_date = cleaned_data.get('art_start_date')
+        if (art_start_date and art_start_date < hiv_test_date):
+            msg ={'art_start_date':
+                       'Date cannot be before date tested positive '
+                       f' {hiv_test_date}'}
+            raise ValidationError(msg)

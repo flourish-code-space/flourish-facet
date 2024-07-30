@@ -3,12 +3,12 @@ import uuid
 from django.apps import apps as django_apps
 from django.db.models import ManyToManyField, ForeignKey, OneToOneField, ManyToOneRel, FileField, ImageField
 from django.db.models.fields.reverse_related import OneToOneRel
-from django.http import HttpResponse
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from flourish_export.admin_export_helper import AdminExportHelper
 import xlwt
 from flourish_caregiver.helper_classes import MaternalStatusHelper
+
 
 class ExportActionMixin(AdminExportHelper):
 
@@ -126,7 +126,7 @@ class ExportActionMixin(AdminExportHelper):
         if consent:
             return getattr(consent, 'screening_identifier', None)
         return None
-    
+
     def caregiver_hiv_status(self, subject_identifier=None):
 
         status_helper = MaternalStatusHelper(
@@ -163,12 +163,10 @@ class ExportActionMixin(AdminExportHelper):
 
     @property
     def exclude_fields(self):
-        return ['created', '_state', 'hostname_created', 'hostname_modified',
+        return ['_state', 'hostname_created', 'hostname_modified',
                 'revision', 'device_created', 'device_modified', 'id', 'site_id',
-                'created_time', 'modified_time', 'report_datetime_time',
-                'registration_datetime_time', 'screening_datetime_time', 'modified',
-                'form_as_json', 'consent_model', 'randomization_datetime',
-                'registration_datetime', 'is_verified_datetime', 'first_name',
-                'last_name', 'initials', 'identity', 'facet_visit_id', 'confirm_identity',
-                'motherchildconsent', ]
-
+                'modified_time', 'report_datetime_time', 'registration_datetime_time',
+                'screening_datetime_time', 'modified', 'form_as_json', 'consent_model',
+                'randomization_datetime', 'registration_datetime', 'is_verified_datetime',
+                'first_name', 'last_name', 'initials', 'identity', 'facet_visit_id',
+                'confirm_identity', 'motherchildconsent', ]

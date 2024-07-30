@@ -17,7 +17,7 @@ class ChildAnthropometry(CrfModelMixin):
         verbose_name='Child’s weight',
         max_digits=5,
         decimal_places=2,
-        validators=[MinValueValidator(2.0), MaxValueValidator(12.0)],
+        validators=[MinValueValidator(2.0), MaxValueValidator(13.0)],
         help_text="Measured in Kilograms (kg)"
     )
 
